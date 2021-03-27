@@ -6,27 +6,29 @@ getNotes = function (jsonFile) {
 };
 
 // adds a note to the notes.json file
-const addNote = function (title, body) {
-  const notes = loadNotes()
-
-  notes.push({
+const addNote = (notes, title, body) => {
+  let repeatedTitles = notes.filter((note) => {
+    return note.title === title
+  })
+  if (repeatedTitles.length === 0) {
+    notes.push({
     title: title,
     body: body
   })
-
-  saveNotes(notes)
+    saveNotes(notes)
+  } else {
+    console.log(chalk.red.bold('Repeated title!'))
+  }
 }
 
-const removeNote = function (ID) {
-  const notes = loadNotes()
-
+const removeNote = (notes, ID) => {
   if (countNotes() === 1 && ID === 0) {
     fs.writeFileSync('notes.json', '')
   } else if (ID > (countNotes() - 1)) {
     console.log(chalk.red.bold('Note not found'))
   } else {
     let a = -1
-    notesToKeep = notes.filter(function () {
+    notesToKeep = notes.filter(() => {
       a++
       return ID !== a
     })
@@ -34,16 +36,14 @@ const removeNote = function (ID) {
   }
 }
 
-const listNotes = function () {
-  const notes = loadNotes()
-
-  for (const [key, value] of Object.values(notes)) {
-    console.log(`[${key}] ${value.title}`)
-  }
+const listNotes = (notes) => {
+  notes.forEach((value, index) => {
+    console.log(`[${chalk.green(index)}] ${value.title}`)
+  });
 }
 
 // returns the notes object
-const loadNotes = function () {
+const loadNotes = () => {
   try {
     const dataBuffer = fs.readFileSync('notes.json')
     const dataJSON = dataBuffer.toString()
@@ -55,7 +55,7 @@ const loadNotes = function () {
 }
 
 // counts how many objets there's in notes.json JSON
-const countNotes = function() {
+const countNotes = () => {
   try {
     return Object.keys(loadNotes()).length
   }
@@ -65,7 +65,7 @@ const countNotes = function() {
 }
 
 // saves a note
-const saveNotes = function (note) {
+const saveNotes = (note) => {
   const dataJSON = JSON.stringify(note)
   fs.writeFileSync('notes.json', dataJSON)
   console.log(chalk.green('Success!'))
@@ -76,5 +76,6 @@ module.exports = {
   addNote: addNote,
   removeNote: removeNote,
   listNotes: listNotes,
-  countNotes: countNotes
+  countNotes: countNotes,
+  loadNotes: loadNotes
 }
