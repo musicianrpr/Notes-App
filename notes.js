@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const fs = require('fs');
 
 getNotes = function (jsonFile) {
@@ -10,29 +11,34 @@ const addNote = function (title, body) {
 
   notes.push({
     title: title,
-    body: body,
-    ID: countNotes()
+    body: body
   })
 
   saveNotes(notes)
 }
 
 const removeNote = function (ID) {
-  var notes = loadNotes()
+  const notes = loadNotes()
 
-  if (countNotes() === 1) {
+  if (countNotes() === 1 && ID === 0) {
     fs.writeFileSync('notes.json', '')
+  } else if (ID > (countNotes() - 1)) {
+    console.log(chalk.red.bold('Note not found'))
   } else {
-    notes = notes.splice(ID, 1)
-    saveNotes(notes)
+    let a = -1
+    notesToKeep = notes.filter(function () {
+      a++
+      return ID !== a
+    })
+    saveNotes(notesToKeep)
   }
 }
 
 const listNotes = function () {
   const notes = loadNotes()
 
-  for (const value of Object.values(notes)) {
-    console.log(`[${value.ID}] ${value.title}`)
+  for (const [key, value] of Object.values(notes)) {
+    console.log(`[${key}] ${value.title}`)
   }
 }
 
@@ -62,6 +68,7 @@ const countNotes = function() {
 const saveNotes = function (note) {
   const dataJSON = JSON.stringify(note)
   fs.writeFileSync('notes.json', dataJSON)
+  console.log(chalk.green('Success!'))
 }
 
 module.exports = {
