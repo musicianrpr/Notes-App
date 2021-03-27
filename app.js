@@ -28,15 +28,15 @@ yargs.command({
   command: 'remove',
   describe: 'Deletes a note',
   builder: {
-    noteID: {
+    ID: {
       describe: "Note's ID",
       demandOption: true,
       type: 'integer'
-    },
-  handler: function () {
-    console.log('Removing note...')
-  }
+    }
   },
+  handler: function (argv) {
+    notesUtils.removeNote(argv.ID)
+  }
 })
 
 // list notes command
@@ -44,7 +44,7 @@ yargs.command({
   command: 'list',
   describe: 'List all notes',
   handler: function () {
-    console.log('Listing notes...')
+    notesUtils.listNotes()
   }
 })
 
@@ -64,6 +64,5 @@ yargs.command({
   },
 })
 
-console.log(chalk.green('Success!!'))
-
 yargs.parse()
+console.log(chalk.green('Success!'))

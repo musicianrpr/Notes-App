@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { type } = require('os');
 
 getNotes = function (jsonFile) {
   return jsonFile
@@ -16,6 +15,17 @@ const addNote = function (title, body) {
   })
 
   saveNotes(notes)
+}
+
+const removeNote = function (ID) {
+  var notes = loadNotes()
+
+  if (countNotes() === 1) {
+    fs.writeFileSync('notes.json', '')
+  } else {
+    notes = notes.splice(ID, 1)
+    saveNotes(notes)
+  }
 }
 
 const listNotes = function () {
@@ -57,7 +67,7 @@ const saveNotes = function (note) {
 module.exports = {
   getNotes: getNotes,
   addNote: addNote,
+  removeNote: removeNote,
+  listNotes: listNotes,
   countNotes: countNotes
 }
-
-listNotes()
