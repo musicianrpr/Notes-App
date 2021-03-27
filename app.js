@@ -64,6 +64,6 @@ yargs.command({
   },
 })
 
-console.log(chalk.green('Success!'))
+console.log(chalk.green('Success!!'))
 
 yargs.parse()
