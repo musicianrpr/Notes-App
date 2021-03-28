@@ -44,6 +44,7 @@ const readNotes = (notes, ID) => {
 }
 
 const listNotes = (notes) => {
+  console.log(chalk.green('Your notes:'))
   notes.forEach((value, index) => {
     console.log(`[${chalk.green(index)}] ${value.title}`)
   });
