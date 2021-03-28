@@ -7,14 +7,12 @@ getNotes = function (jsonFile) {
 
 // adds a note to the notes.json file
 const addNote = (notes, title, body) => {
-  let repeatedTitles = notes.filter((note) => {
-    return note.title === title
-  })
-  if (repeatedTitles.length === 0) {
+  const titleIsRepeated = notes.find((note) => note.title === title)
+  if (!titleIsRepeated) {
     notes.push({
-    title: title,
-    body: body
-  })
+      title: title,
+      body: body
+    })
     saveNotes(notes)
   } else {
     console.log(chalk.red.bold('Repeated title!'))
@@ -25,7 +23,7 @@ const removeNote = (notes, ID) => {
   if (countNotes() === 1 && ID === 0) {
     fs.writeFileSync('notes.json', '')
   } else if (ID > (countNotes() - 1)) {
-    console.log(chalk.red.bold('Note not found'))
+    console.log(chalk.red.bold('Select a valid ID'))
   } else {
     let a = -1
     notesToKeep = notes.filter(() => {
@@ -36,6 +34,15 @@ const removeNote = (notes, ID) => {
   }
 }
 
+const readNotes = (notes, ID) => {
+  try {
+    console.log(`->${chalk.green(notes[ID].title)}<-\n${notes[ID].body}`)
+  }
+  catch (err) {
+    console.log(chalk.red.bold('Select a valid ID'))
+  }
+}
+
 const listNotes = (notes) => {
   notes.forEach((value, index) => {
     console.log(`[${chalk.green(index)}] ${value.title}`)
@@ -43,7 +50,7 @@ const listNotes = (notes) => {
 }
 
 // returns the notes object
-const loadNotes = () => {
+const notesObj = () => {
   try {
     const dataBuffer = fs.readFileSync('notes.json')
     const dataJSON = dataBuffer.toString()
@@ -57,7 +64,7 @@ const loadNotes = () => {
 // counts how many objets there's in notes.json JSON
 const countNotes = () => {
   try {
-    return Object.keys(loadNotes()).length
+    return Object.keys(notesObj()).length
   }
   catch (err) {
     return 0
@@ -76,6 +83,7 @@ module.exports = {
   addNote: addNote,
   removeNote: removeNote,
   listNotes: listNotes,
+  readNotes: readNotes,
   countNotes: countNotes,
-  loadNotes: loadNotes
+  notesObj: notesObj
 }

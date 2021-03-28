@@ -1,7 +1,6 @@
 const notesUtils = require('./notes')
 const chalk = require('chalk')
 const yargs = require('yargs')
-const { loadNotes } = require('./notes')
 
 // add note command
 yargs.command({
@@ -20,7 +19,7 @@ yargs.command({
     }
   },
   handler(argv) {
-    notesUtils.addNote(loadNotes(), argv.title, argv.body)
+    notesUtils.addNote(notesUtils.notesObj(), argv.title, argv.body)
   }
 })
 
@@ -36,7 +35,7 @@ yargs.command({
     }
   },
   handler(argv) {
-    notesUtils.removeNote(loadNotes(), argv.ID)
+    notesUtils.removeNote(notesUtils.notesObj(), argv.ID)
   }
 })
 
@@ -45,7 +44,7 @@ yargs.command({
   command: 'list',
   describe: 'List all notes',
   handler() {
-    notesUtils.listNotes(loadNotes())
+    notesUtils.listNotes(notesUtils.notesObj())
   }
 })
 
@@ -54,15 +53,15 @@ yargs.command({
   command: 'read',
   describe: 'Reads a single note',
   builder: {
-    noteID: {
-      describe: '',
+    ID: {
+      describe: "Note's ID",
       demandOption: true,
       type: 'integer'
-    },
-  handler() {
-    console.log('Reading a note...')
-  }
+    }
   },
+  handler(argv) {
+    notesUtils.readNotes(notesUtils.notesObj(), argv.ID)
+  }
 })
 
 yargs.parse() 
